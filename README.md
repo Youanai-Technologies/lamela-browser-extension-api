@@ -1,6 +1,4 @@
-- # TypeScript WebSocket Example
-
-* # Browser Extension WebSocket API
+# Browser Extension WebSocket API
 
 - A simple TypeScript WebSocket server and client implementation using the `ws` package.
 
