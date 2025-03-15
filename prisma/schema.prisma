@@ -1,0 +1,172 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  userId                   String
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String?
+  access_token             String?
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String?
+  session_state            String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime
+  refresh_token_expires_in Int?
+  User                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model AppOrder {
+  id        String   @id
+  userId    String   @unique
+  order     String[]
+  updatedAt DateTime
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model File {
+  id         String   @id
+  name       String
+  type       FileType
+  parentId   String?
+  content    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime
+  mimeType   String?
+  r2Key      String?
+  r2Url      String?
+  size       Int?
+  userId     String
+  File       File?    @relation("FileToFile", fields: [parentId], references: [id])
+  other_File File[]   @relation("FileToFile")
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([name, parentId, userId])
+  @@index([parentId])
+  @@index([userId])
+}
+
+model Message {
+  id         String   @id
+  userId     String
+  content    String
+  role       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime
+  pineconeId String?
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Notification {
+  id        String   @id
+  userId    String
+  title     String
+  message   String
+  type      String
+  priority  String
+  read      Boolean  @default(false)
+  actionUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([userId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                String             @id
+  name              String?
+  email             String             @unique
+  emailVerified     DateTime?
+  image             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime
+  phone             String?            @unique
+  Account           Account[]
+  AppOrder          AppOrder?
+  File              File[]
+  Message           Message[]
+  Notification      Notification[]
+  Session           Session[]
+  UserInsight       UserInsight[]
+  WallpaperSettings WallpaperSettings?
+}
+
+model UserInsight {
+  id           String   @id
+  userId       String
+  content      String
+  category     String
+  confidence   Float
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+  lastAnalyzed DateTime @default(now())
+  pineconeId   String?
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([category])
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model WaitlistSubscriber {
+  id        String   @id
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+
+  @@index([createdAt])
+}
+
+model WallpaperSettings {
+  id               String   @id
+  userId           String   @unique
+  currentWallpaper String?
+  lastUpdated      DateTime @default(now())
+  autoChange       Boolean  @default(true)
+  User             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Browsers {
+  id         Int      @id @default(autoincrement())
+  accessCode String   @unique @db.VarChar(255)
+  userAgent  String
+  createdat  DateTime @default(now()) @db.Timestamp(6)
+  isOnline   Boolean  @default(false)
+  lastOnline DateTime @default(now()) @db.Timestamp(6)
+}
+
+enum FileType {
+  FILE
+  DIRECTORY
+}

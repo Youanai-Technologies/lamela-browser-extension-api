@@ -1,0 +1,28 @@
+{
+  "name": "typescript-websocket",
+  "version": "1.0.0",
+  "description": "TypeScript WebSocket Example",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start:server": "ts-node -r tsconfig-paths/register src/server.ts",
+    "start:client": "ts-node -r tsconfig-paths/register src/client.ts",
+    "dev": "nodemon --exec \"ts-node -r tsconfig-paths/register\" src/server.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.4.1",
+    "dotenv": "^16.4.7",
+    "prisma": "^6.4.1",
+    "uuid": "^11.1.0",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "@types/uuid": "^10.0.0",
+    "@types/ws": "^8.5.10",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.3"
+  }
+}
