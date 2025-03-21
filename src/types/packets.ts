@@ -101,6 +101,7 @@ export interface PongPacket extends Packet {
   };
 }
 
+
 /**
  * Command packet for web scraping operations
  */

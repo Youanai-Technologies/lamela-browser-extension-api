@@ -7,7 +7,7 @@ import {
   InitPacket,
   PacketType,
   PingPacket,
-  PongPacket
+  PongPacket,
 } from '@/types/packets';
 import { WebSocket } from 'ws';
 
